@@ -25,7 +25,7 @@ public class MeuRecyclerViewClickListener implements RecyclerView.OnItemTouchLis
                 View childView = view.findChildViewUnder(motionEvent.getX(),motionEvent.getY());
                 if (childView != null && myListener != null ) {
                     myListener.onItemClick(childView, view.getChildAdapterPosition(childView));
-                    Log.i("Teste", "onSingleTapUp");
+                    Log.i("Teste", "onSingleTapUp ");
                 }
                 return true;
             }
