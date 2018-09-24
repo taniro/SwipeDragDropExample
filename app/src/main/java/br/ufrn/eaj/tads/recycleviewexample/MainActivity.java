@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        final RecyclerView recyclerView = findViewById(R.id.recyclerview);
 
         carregaFrutas();
 
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         //recyclerView.setAdapter(new SlideInLeftAnimationAdapter(frutaAdapter));
 
 
+        /* Definição do Layout que o recycler view usará */
         RecyclerView.LayoutManager layout = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
 
         /*
@@ -64,9 +65,22 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layout);
 
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         /*
+        Exemplos da biblioteca https://github.com/wasabeef/recyclerview-animators
+         */
+        //recyclerView.setItemAnimator(new FadeInDownAnimator());
+        //recyclerView.setItemAnimator(new FlipInTopXAnimator());
+        //recyclerView.setItemAnimator(new OvershootInLeftAnimator());
+        //recyclerView.setItemAnimator(new LandingAnimator());
+
+        /*
+        //================== IMPLEMENTAÇÂO DO CLIQUE 1 ===========================
+
          Esse código não funciona
+        */
+
 
         recyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,18 +88,20 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Não funciona", Toast.LENGTH_SHORT).show();
             }
         });
-         */
+
+        /*
+        //================== IMPLEMENTAÇÂO DO CLIQUE 2 ===========================
 
         recyclerView.addOnItemTouchListener(new MeuRecyclerViewClickListener(MainActivity.this, recyclerView, new MeuRecyclerViewClickListener.OnItemClickListener() {
 
             @Override
             public void onItemClick(View view, int position) {
-                // Toast.makeText(MainActivity.this, "Clique simples", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Clique simples", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onItemLongClick(View view, final int position) {
-                /*
+
                 final Fruta removida = frutaArrayList.get(position);
 
                 frutaArrayList.remove(position);
@@ -101,78 +117,11 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                 snack.show();
-                */
+
             }
         }));
+        */
 
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        //setUpItemTouchHelper(recyclerView);
-
-        /*
-        Exemplos da biblioteca https://github.com/wasabeef/recyclerview-animators
-         */
-        //recyclerView.setItemAnimator(new FadeInDownAnimator());
-        //recyclerView.setItemAnimator(new FlipInTopXAnimator());
-        //recyclerView.setItemAnimator(new OvershootInLeftAnimator());
-        //recyclerView.setItemAnimator(new LandingAnimator());
-
-
-        ItemTouchHelper swipeHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.START | ItemTouchHelper.END) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                //é usado para operações drag and drop
-                int fromPosition = viewHolder.getAdapterPosition();
-                int toPosition = target.getAdapterPosition();
-
-                FrutaAdapter adapter = (FrutaAdapter) recyclerView.getAdapter();
-
-                adapter.mover(fromPosition, toPosition);
-                return true;// true se moveu, se não moveu, retorne falso
-            }
-
-            @Override
-            public boolean isLongPressDragEnabled() {
-                //return false; se quiser, é possivel desabilitar o drag and drop
-                return true;
-            }
-
-            @Override
-            public boolean isItemViewSwipeEnabled() {
-                //return false; se quiser, é possivel desabilitar o swipe
-                return true;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                //usado para implementar o swipe
-                int posicao = viewHolder.getAdapterPosition();
-                FrutaAdapter adapter = (FrutaAdapter) recyclerView.getAdapter();
-                adapter.removerComTempo(posicao);
-                adapter.remover(posicao);
-            }
-
-            @Override
-            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-
-                View itemView = viewHolder.itemView;
-                Drawable background = new ColorDrawable(Color.RED);
-
-                // not sure why, but this method get's called for viewholder that are already swiped away
-                if (viewHolder.getAdapterPosition() == -1) {
-                    // not interested in those
-                    return;
-                }
-
-                // draw red background
-                background.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
-                background.draw(c);
-
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            }
-
-        });
-
-        swipeHelper.attachToRecyclerView(recyclerView);
     }
 
     public void carregaFrutas() {
