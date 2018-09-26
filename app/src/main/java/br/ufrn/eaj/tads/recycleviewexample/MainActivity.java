@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         //================== IMPLEMENTAÇÂO DO CLIQUE 1 ===========================
 
          Esse código não funciona
-        */
+
 
 
         recyclerView.setOnClickListener(new View.OnClickListener() {
@@ -121,6 +122,130 @@ public class MainActivity extends AppCompatActivity {
             }
         }));
         */
+
+
+        //EXEMPLO 1 PARA AULA
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+                int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+
+                Log.i("AULA17", "Drag flags: " + Integer.toBinaryString(dragFlags) + "Swipe flags: " + Integer.toBinaryString(swipeFlags)); //11 e 110000
+                return makeMovementFlags(dragFlags, swipeFlags);
+            }
+
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder dragged, @NonNull RecyclerView.ViewHolder target) {
+                Log.i("AULA17", "OnMove invocado. Mover da posição " + dragged.getAdapterPosition() + " para " + target.getAdapterPosition());
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                Log.i("AULA17", "OnSwipe invocado. Direção: " + Integer.toBinaryString(direction));
+
+            }
+        });
+
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+        
+
+
+        /*
+        //EXEMPLO 2 PARA AULA
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder dragged, @NonNull RecyclerView.ViewHolder target) {
+                Log.i("AULA17", "OnMove invocado. Mover da posição " + dragged.getAdapterPosition() + " para " + target.getAdapterPosition());
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+            }
+        });
+
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+        */
+
+
+        /*
+        //EXEMPLO 3 PARA AULA
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.START | ItemTouchHelper.END) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                //é usado para operações drag and drop
+                int fromPosition = viewHolder.getAdapterPosition();
+                int toPosition = target.getAdapterPosition();
+
+                FrutaAdapter adapter = (FrutaAdapter) recyclerView.getAdapter();
+
+                adapter.mover(fromPosition, toPosition);
+                return true;// true se moveu, se não moveu, retorne falso
+            }
+
+            @Override
+            public boolean isLongPressDragEnabled() {
+                //return false; se quiser, é possivel desabilitar o drag and drop
+                return true;
+            }
+
+            @Override
+            public boolean isItemViewSwipeEnabled() {
+                //return false; se quiser, é possivel desabilitar o swipe
+                return true;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                //usado para implementar o swipe
+                int posicao = viewHolder.getAdapterPosition();
+                FrutaAdapter adapter = (FrutaAdapter) recyclerView.getAdapter();
+                adapter.removerComTempo(posicao);
+                //adapter.remover(posicao);
+            }
+
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                View itemView = viewHolder.itemView;
+                Drawable background = new ColorDrawable(Color.RED);
+
+                // not sure why, but this method get's called for viewholder that are already swiped away
+                if (viewHolder.getAdapterPosition() == -1) {
+                    // not interested in those
+                    return;
+                }
+
+                Log.i("AULA17", "dx = " + dX);
+                // Here, if dX > 0 then swiping right.
+                // If dX < 0 then swiping left.
+                // If dX == 0 then at at start position.
+
+                // draw red background
+
+                if(dX < 0) {
+                    Log.i("AULA17", "dX < 0");
+                    background.setBounds(itemView.getRight() + (int) dX, itemView.getTop(), itemView.getRight(), itemView.getBottom());
+                }else if(dX > 0){
+                    Log.i("AULA17", "dX > 0");
+                    background.setBounds(itemView.getLeft(), itemView.getTop(), itemView.getRight()  + (int) dX, itemView.getBottom());
+                }
+                background.draw(c);
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+
+        });
+
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+        */
+
 
     }
 
